@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sysctl dev.cpu | sed -nE 's/^dev.cpu.([0-9]+).temperature: ([0-9.]+)C/temp,cpu=core\1 temp=\2/p'
