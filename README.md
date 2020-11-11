@@ -12,6 +12,13 @@ git clone https://github.com/samuelkadolph/truenas-telegraf .
 ./install
 ```
 
+### Tested With
+
+Confirmed to work with:
+
+* FreeNAS-11.3-U4.1
+* TrueNAS-12.0-RELEASE
+
 ### cputemp
 
 ```
