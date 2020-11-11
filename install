@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
+import base64
+import getpass
 import hashlib
 import io
+import json
 import os
 import pathlib
 import platform
 import sys
 import tarfile
+import urllib.error
 import urllib.request
 
 if platform.machine() == "amd64":
@@ -26,8 +30,49 @@ def create_binary(blob):
   st = os.stat(path)
   os.chmod(path, st.st_mode | 0o111)
 
+def create_init_command(command, password, host="localhost", username="root"):
+  commands = do_request("http://%s/api/v2.0/initshutdownscript/" % host, method="GET", username=username, password=password)
+
+  for cmd in commands:
+    if cmd["command"] == command:
+      print_msg("command already exists, skipping")
+      return
+
+  payload = {
+    "type": "COMMAND",
+    "command": command,
+    "when": "POSTINIT",
+    "enabled": True,
+    "timeout": 0
+  }
+
+  do_request("http://%s/api/v2.0/initshutdownscript/" % host, method="POST", data=json.dumps(payload).encode("ASCII"), content_type="application/json", username=username, password=password)
+
+def do_request(url, username, password, data=None, method="GET", content_type=None):
+  auth = "Basic %s" % base64.b64encode(("%s:%s" % (username, password)).encode("ASCII")).decode("ASCII")
+
+  req = urllib.request.Request("http://localhost/api/v2.0/initshutdownscript/", data=data, method=method)
+  req.add_header("Authorization", auth)
+
+  if content_type:
+    req.add_header("Content-Type", content_type)
+
+  try:
+    res = urllib.request.urlopen(req)
+  except urllib.error.HTTPError as err:
+    if err.code == 401:
+      print_msg("Wrong password")
+      return
+    elif err.code == 500:
+      print_msg("Server error")
+      return
+    else:
+      raise
+
+  return json.load(res)
+
 def print_msg(message):
-  sys.stdout.write(message + "\n")
+  sys.stdout.write("%s\n" % message)
   sys.stdout.flush()
 
 print_msg("Downloading %s" % download)
@@ -49,8 +94,25 @@ with urllib.request.urlopen(download) as archive:
 
 print_msg("Extracted telegraf binary")
 
-print_msg("Installing init script")
-# TODO
-# also do first syslink
+init_file = os.path.join(dir, "telegraf.init")
+rc_file = "/usr/local/etc/rc.d/telegraf"
+command = "ln -s %s %s; service telegraf start" % (init_file, rc_file)
+manual_msg = "Skipping, you will have add the following as an Post Init Command in the Web UI:\n\n%s\n" % command
+
+try:
+  os.symlink(init_file, rc_file)
+except FileExistsError:
+  print_msg("%s symlink already exists" % rc_file)
+
+print_msg("Creating init command, you need to enter the password for the root user. If you don't want to do this, press Ctrl+C or enter a blank password")
+
+try:
+  password = getpass.getpass("root password: ")
+  if password == "":
+    print_msg(manual_msg)
+  else:
+    create_init_command(command, password)
+except KeyboardInterrupt:
+  print_msg("\n%s" % manual_msg)
 
 print_msg("Run 'service start telegraf' after you create %s/telegraf.conf" % dir)
