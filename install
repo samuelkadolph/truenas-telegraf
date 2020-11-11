@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import hashlib
+import io
+import os
+import pathlib
+import platform
+import sys
+import tarfile
+import urllib.request
+
+if platform.machine() == "amd64":
+  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.16.1_freebsd_amd64.tar.gz"
+  signature = "03ce7815ea60a4c690750f302c104f42bdcdc7818fbe8597292d099fdd1ecbdb"
+else:
+  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.16.1_freebsd_i386.tar.gz"
+  signature = "6bd4d1f5ff35611eea444fac3c594bef29b86f186b79b1a106f3130670a84a9d"
+
+dir = pathlib.Path(__file__).parent.absolute()
+
+def create_binary(blob):
+  path = os.path.join(dir, "telegraf")
+  with open(path, "wb") as file:
+    file.write(blob)
+
+  st = os.stat(path)
+  os.chmod(path, st.st_mode | 0o111)
+
+def print_msg(message):
+  sys.stdout.write(message + "\n")
+  sys.stdout.flush()
+
+print_msg("Downloading %s" % download)
+
+with urllib.request.urlopen(download) as archive:
+  blob = archive.read()
+  hash = hashlib.sha256()
+  hash.update(blob)
+
+  if signature != hash.hexdigest():
+    print_msg("Signature did not match '%s'" % signature)
+    exit(1)
+
+  tar = tarfile.open(fileobj=io.BytesIO(blob), mode="r:gz")
+  for member in tar.getmembers():
+    if member.name.endswith("/usr/bin/telegraf"):
+      with tar.extractfile(member) as binary:
+        create_binary(binary.read())
+
+print_msg("Extracted telegraf binary")
+
+print_msg("Installing init script")
+# TODO
+# also do first syslink
+
+print_msg("Run 'service start telegraf' after you create %s/telegraf.conf" % dir)
