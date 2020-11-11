@@ -115,4 +115,4 @@ try:
 except KeyboardInterrupt:
   print_msg("\n%s" % manual_msg)
 
-print_msg("Run 'service start telegraf' after you create %s/telegraf.conf" % dir)
+print_msg("Run 'service telegraf start' after you create %s/telegraf.conf" % dir)
