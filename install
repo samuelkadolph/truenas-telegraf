@@ -9,6 +9,7 @@ import os
 import pathlib
 import platform
 import sys
+import ssl
 import tarfile
 import urllib.error
 import urllib.request
@@ -39,11 +40,12 @@ def create_init_command(command, password, host="localhost", username="root"):
       return
 
   payload = {
-    "type": "COMMAND",
     "command": command,
-    "when": "POSTINIT",
+    "comment": "Start Telegraf",
     "enabled": True,
-    "timeout": 0
+    "timeout": 0,
+    "type": "COMMAND",
+    "when": "POSTINIT",
   }
 
   do_request("http://%s/api/v2.0/initshutdownscript/" % host, method="POST", data=json.dumps(payload).encode("ASCII"), content_type="application/json", username=username, password=password)
@@ -51,14 +53,14 @@ def create_init_command(command, password, host="localhost", username="root"):
 def do_request(url, username, password, data=None, method="GET", content_type=None):
   auth = "Basic %s" % base64.b64encode(("%s:%s" % (username, password)).encode("ASCII")).decode("ASCII")
 
-  req = urllib.request.Request("http://localhost/api/v2.0/initshutdownscript/", data=data, method=method)
+  req = urllib.request.Request("https://localhost/api/v2.0/initshutdownscript/", data=data, method=method)
   req.add_header("Authorization", auth)
 
   if content_type:
     req.add_header("Content-Type", content_type)
 
   try:
-    res = urllib.request.urlopen(req)
+    res = urllib.request.urlopen(req, context=ssl._create_unverified_context())
   except urllib.error.HTTPError as err:
     if err.code == 401:
       print_msg("Wrong password")
