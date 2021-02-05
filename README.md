@@ -18,8 +18,11 @@ Confirmed to work with:
 
 * FreeNAS-11.3-U4.1
 * TrueNAS-12.0-RELEASE
+* TrueNAS-12.0-U1.1
 
 ### cputemp
+
+I've included a small script that will correctly report CPU temperatures. Add this to your config.
 
 ```
 [[inputs.exec]]
