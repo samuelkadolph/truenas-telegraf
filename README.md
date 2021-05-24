@@ -19,6 +19,7 @@ Confirmed to work with:
 * FreeNAS-11.3-U4.1
 * TrueNAS-12.0-RELEASE
 * TrueNAS-12.0-U1.1
+* TrueNAS-12.0-U3
 
 ### cputemp
 
