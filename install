@@ -16,10 +16,10 @@ import urllib.request
 
 if platform.machine() == "amd64":
   download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.23.4_freebsd_amd64.tar.gz"
-  signature = "e6b57e857501983a70d1d2192788416bdf0b988aaf617c037ce43b1a709fcbef"
+  signature = "ccd53868666149057ea855a1d1fbb45aa1d59ca8346e56d7c3ce15c82454487a"
 else:
-  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.23.2_freebsd_i386.tar.gz"
-  signature = "1b26e5bbaa9de7b7557ca00d3b400cebfb68d6bff2ddbd8a11d61677dc8819fe"
+  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.23.4_freebsd_i386.tar.gz"
+  signature = "debb2dd44df927e4f2d321bc97fcfdda4fe941861d584194fe695a4c48f5e54d"
 
 dir = pathlib.Path(__file__).parent.absolute()
 
