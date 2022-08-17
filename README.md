@@ -1,18 +1,17 @@
-## truenas-telegraf
+# truenas-telegraf
 
-### Installation
+## Installation
 
 You should install this inside a dataset so it won't get blown away by any
 TrueNAS updates.
 
 ```
 zfs create tank/telegraf
-cd /mnt/tank/telegraf
-git clone https://github.com/samuelkadolph/truenas-telegraf .
-./install
+git clone https://github.com/samuelkadolph/truenas-telegraf /mnt/tank/telegraf
+/mnt/tank/telegraf/install
 ```
 
-### Tested With
+## Tested With
 
 Confirmed to work with:
 
@@ -21,7 +20,7 @@ Confirmed to work with:
 * TrueNAS-12.0-U1.1
 * TrueNAS-12.0-U3
 
-### cputemp
+## cputemp
 
 I've included a small script that will correctly report CPU temperatures. Add this to your config.
 
