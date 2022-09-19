@@ -15,11 +15,11 @@ import urllib.error
 import urllib.request
 
 if platform.machine() == "amd64":
-  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.23.4_freebsd_amd64.tar.gz"
-  signature = "ccd53868666149057ea855a1d1fbb45aa1d59ca8346e56d7c3ce15c82454487a"
+  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.24.0_freebsd_amd64.tar.gz"
+  signature = "ce6e623690afbd80baec407b323813cd4163917bd4aa8f012122ad277f3f727c"
 else:
-  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.23.4_freebsd_i386.tar.gz"
-  signature = "debb2dd44df927e4f2d321bc97fcfdda4fe941861d584194fe695a4c48f5e54d"
+  download = "https://dl.influxdata.com/telegraf/releases/telegraf-1.24.0_freebsd_i386.tar.gz"
+  signature = "dbfdad34593952ace6ca0e34063c059aadf63d3cba933464a0ee171723d8bff9"
 
 dir = pathlib.Path(__file__).parent.absolute()
 
