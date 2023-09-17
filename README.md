@@ -24,6 +24,7 @@ Confirmed to work with:
 ## Configuration
 
 Main configuration file lives at `/mnt/tank/telegraf/telegraf.conf`.
+
 Additional configuration files live in `/mnt/tank/telegraf/telegraf.d`.
 
 ## cputemp
