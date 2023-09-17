@@ -19,6 +19,12 @@ Confirmed to work with:
 * TrueNAS-12.0-RELEASE
 * TrueNAS-12.0-U1.1
 * TrueNAS-12.0-U3
+* TrueNAS-13.0-U5.3
+
+## Configuration
+
+Main configuration file lives at `/mnt/tank/telegraf/telegraf.conf`.
+Additional configuration files live in `/mnt/tank/telegraf/telegraf.d`.
 
 ## cputemp
 
